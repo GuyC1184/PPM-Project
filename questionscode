@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string filePath = @"somedrivingtheoryquestions.txt";
+            var lines = new List<string>();
+            string line;
+            StreamReader file = null;
+            try
+            {
+                file = new StreamReader(filePath);
+                while ((line = file.ReadLine()) != null)
+                {
+                    lines.Add(line);
+                }
+            }
+            finally
+            {
+                if (file != null)
+                    file.Close();
+            }
+            int q;
+            Console.WriteLine("How many questions would you like to answer?\n");
+            q = Convert.ToInt32(Console.ReadLine());
+            while (q < 1 || q > 9)
+            {
+                Console.WriteLine("Please enter a number from 1 to 9\n");
+                q = Convert.ToInt32(Console.ReadLine());
+            }
+            while (q > 0)
+            {
+                var temp = new List<string>();
+                Random random = new Random();
+                int question = random.Next(0, lines.Count / 4);
+                question = question * 4;
+                question = question - 4;
+                for (int i = 0; i < 3; i++)
+                {
+                    temp.Add(lines[question + i + 1]);
+                    temp.OrderBy(x => Guid.NewGuid()).ToList();
+                }
+                var fin = new List<string>();
+                for (int i = 0; i < 3; i++)
+                {
+                    fin.Add(temp[i]);
+                }
+                Console.WriteLine(lines[question] + "\n");
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.Write(temp[i] + "\n");
+                }
+                int answer;
+                Console.Write("Please enter your answer, choose from 1 to 3:");
+                answer = Convert.ToInt32(Console.ReadLine());
+                while (answer < 1 || answer > 3)
+                {
+                    Console.Write("Please enter a valid number\n");
+                    answer = Convert.ToInt32(Console.ReadLine());
+                }
+                if (answer >= 1 && answer <= 3)
+                {
+                    if (fin[answer - 1] == lines[question + 1])
+                    {
+                        Console.Write("Correct\n");
+                    }
+                    else
+                    {
+                        Console.Write("Incorrect. The answer was " + lines[question + 1]);
+                    }
+                }
+                else
+                {
+                    Console.Write("Please enter a valid number\n");
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    lines.RemoveRange(question, question + 3);
+                }
+                q--;
+                Console.Read();
+            }
+            Console.Read();
+        }
+    }
+}
